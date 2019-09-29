@@ -1,0 +1,37 @@
+{
+    "name": "constanze-standard/dependency",
+    "description": "The container implementation of PSR-11.",
+    "keywords": [
+        "container",
+        "psr",
+        "psr-11",
+        "service",
+        "dependency",
+        "service-provider",
+        "di",
+        "invoker",
+        "ioc"
+    ],
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Constanze Standard",
+            "email": "omytty.alex@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "psr/container": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "6.5.14"
+    },
+    "autoload": {
+        "psr-4": {
+            "ConstanzeStandard\\Dependency\\": "src"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
