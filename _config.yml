@@ -1,3 +1,4 @@
 theme: jekyll-theme-architect
 title: 'Container'
 description: FIG PSR-11 标准容器组件。
+sidebar: false
