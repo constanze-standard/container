@@ -8,7 +8,7 @@ Beige PSR-11 是一个轻量级的 PSR-11 标准容器。它的目标是将容�
 
 ## 安装
 ```
-composer require beige/psr-11
+composer require constanze-standard/container
 ```
 
 ## 使用
