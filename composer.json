@@ -1,6 +1,6 @@
 {
     "name": "constanze-standard/container",
-    "description": "The container implementation of PSR-11.",
+    "description": "The container into PSR-11 implementation",
     "keywords": [
         "container",
         "psr",
