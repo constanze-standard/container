@@ -16,21 +16,21 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency;
+namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Dependency\Interfaces\ServiceProviderInterface;
+use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
 
-abstract class AbstractServiceProvider implements ServiceProviderInterface
+abstract class AbstractEntryProvider implements EntryProviderInterface
 {
     /**
-     * Provides services.
+     * Provides entries.
      * 
      * @var array
      */
     protected $provides = [];
 
     /**
-     * Returns true if the service is provided by collection or returns false.
+     * Returns true if the entry is provided by collection or returns false.
      * 
      * @param string $id
      * 

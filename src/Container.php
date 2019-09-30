@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency;
+namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Dependency\Exception\NotFoundException;
-use ConstanzeStandard\Dependency\Interfaces\ContainerInterface;
-use ConstanzeStandard\Dependency\Interfaces\EntryCollectionInterface;
-use ConstanzeStandard\Dependency\Interfaces\EntryInterface;
-use ConstanzeStandard\Dependency\Interfaces\FactoryInterface;
-use ConstanzeStandard\Dependency\Interfaces\ServiceProviderCollectionInterface;
-use ConstanzeStandard\Dependency\Interfaces\ServiceProviderInterface;
+use ConstanzeStandard\Container\Exception\NotFoundException;
+use ConstanzeStandard\Container\Interfaces\ContainerInterface;
+use ConstanzeStandard\Container\Interfaces\EntryCollectionInterface;
+use ConstanzeStandard\Container\Interfaces\EntryInterface;
+use ConstanzeStandard\Container\Interfaces\FactoryInterface;
+use ConstanzeStandard\Container\Interfaces\EntryProviderCollectionInterface;
+use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
 use InvalidArgumentException;
 
 class Container implements ContainerInterface, FactoryInterface
@@ -37,24 +37,31 @@ class Container implements ContainerInterface, FactoryInterface
     private $entryAggregate;
 
     /**
-     * The service provider collection.
+     * The entry provider collection.
      * 
-     * @var ServiceProviderCollectionInterface
+     * @var EntryProviderCollectionInterface
      */
-    private $serviceProviderCollection;
+    private $entryProviderCollection;
+
+    /**
+     * Arguments for every entry.
+     * 
+     * @var array
+     */
+    private $entryArguments = [];
 
     /**
      * @param EntryCollectionInterface|null $entryAggregate
-     * @param ServiceProviderCollectionInterface|null $serviceProviderCollection
+     * @param EntryProviderCollectionInterface|null $entryProviderCollection
      */
     public function __construct(
         EntryCollectionInterface $entryAggregate = null,
-        ServiceProviderCollectionInterface $serviceProviderCollection = null
+        EntryProviderCollectionInterface $entryProviderCollection = null
     )
     {
         $this->entryAggregate = $entryAggregate ?? new EntryCollection();
-        $this->serviceProviderCollection = $serviceProviderCollection ?? 
-            new ServiceProviderCollection($this);
+        $this->entryProviderCollection = $entryProviderCollection ?? 
+            new EntryProviderCollection($this);
     }
 
     /**
@@ -66,7 +73,9 @@ class Container implements ContainerInterface, FactoryInterface
      */
     public function addEntry(EntryInterface $entry)
     {
-        return $this->entryAggregate->add($entry);
+        return $this->entryAggregate
+            ->add($entry)
+            ->addArguments(...$this->entryArguments);
     }
 
     /**
@@ -80,8 +89,24 @@ class Container implements ContainerInterface, FactoryInterface
      */
     public function add(string $id, $entry, bool $isDefinition = false)
     {
-        $entry = new Entry($id, $entry, $isDefinition);
-        return $this->addEntry($entry);
+        return $this->addEntry(
+            new Entry($id, $entry, $isDefinition)
+        );
+    }
+
+    /**
+     * Add arguments for every entry.
+     * 
+     * @param mixed ...$arguments
+     */
+    public function withEntryArguments(...$arguments): self
+    {
+        $this->entryArguments = array_merge(
+            $this->entryArguments,
+            $arguments
+        );
+
+        return $this;
     }
 
     /**
@@ -96,8 +121,8 @@ class Container implements ContainerInterface, FactoryInterface
             return $this->entryAggregate->resolve($id, $parameters, true);
         }
 
-        if ($this->serviceProviderCollection->has($id)) {
-            $this->serviceProviderCollection->register($id);
+        if ($this->entryProviderCollection->has($id)) {
+            $this->entryProviderCollection->register($id);
             return $this->entryAggregate->resolve($id, $parameters, true);
         }
 
@@ -105,15 +130,15 @@ class Container implements ContainerInterface, FactoryInterface
     }
 
     /**
-     * Add a service provider.
+     * Add a entry provider.
      * 
-     * @param ServiceProviderInterface $serviceProvider
+     * @param EntryProviderInterface $entryProvider
      * 
      * @return self
      */
-    public function addServiceProvider(ServiceProviderInterface $serviceProvider): ContainerInterface
+    public function addEntryProvider(EntryProviderInterface $entryProvider): ContainerInterface
     {
-        $this->serviceProviderCollection->add($serviceProvider);
+        $this->entryProviderCollection->add($entryProvider);
 
         return $this;
     }
@@ -138,8 +163,8 @@ class Container implements ContainerInterface, FactoryInterface
             return $this->entryAggregate->get($id);
         }
 
-        if ($this->serviceProviderCollection->has($id)) {
-            $this->serviceProviderCollection->register($id);
+        if ($this->entryProviderCollection->has($id)) {
+            $this->entryProviderCollection->register($id);
             return $this->entryAggregate->get($id);
         }
 
@@ -165,7 +190,7 @@ class Container implements ContainerInterface, FactoryInterface
 
         if (
             $this->entryAggregate->has($id) ||
-            $this->serviceProviderCollection->has($id)
+            $this->entryProviderCollection->has($id)
         ) {
             return true;
         }

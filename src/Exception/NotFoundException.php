@@ -1,6 +1,6 @@
 <?php
 
-namespace ConstanzeStandard\Dependency\Exception;
+namespace ConstanzeStandard\Container\Exception;
 
 use Psr\Container\NotFoundExceptionInterface;
 

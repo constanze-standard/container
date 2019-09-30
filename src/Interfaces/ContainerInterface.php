@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency\Interfaces;
+namespace ConstanzeStandard\Container\Interfaces;
 
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 
@@ -51,11 +51,11 @@ interface ContainerInterface extends PsrContainerInterface
     public function make(string $id, ...$parameters);
 
     /**
-     * Add a service provider.
+     * Add a entry provider.
      * 
-     * @param ServiceProviderInterface $serviceProvider
+     * @param EntryProviderInterface $entryProvider
      * 
      * @return self
      */
-    public function addServiceProvider(ServiceProviderInterface $serviceProvider): self;
+    public function addEntryProvider(EntryProviderInterface $entryProvider): self;
 }

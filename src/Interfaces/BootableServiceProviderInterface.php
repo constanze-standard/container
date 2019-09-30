@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency\Interfaces;
+namespace ConstanzeStandard\Container\Interfaces;
 
-interface BootableServiceProviderInterface extends ServiceProviderInterface
+interface BootableEntryProviderInterface extends EntryProviderInterface
 {
     /**
      * Provides ability for eager loading of Service Providers.

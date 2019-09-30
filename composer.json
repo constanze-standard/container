@@ -1,5 +1,5 @@
 {
-    "name": "constanze-standard/dependency",
+    "name": "constanze-standard/container",
     "description": "The container implementation of PSR-11.",
     "keywords": [
         "container",
@@ -29,7 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ConstanzeStandard\\Dependency\\": "src"
+            "ConstanzeStandard\\Container\\": "src"
         }
     },
     "minimum-stability": "stable",

@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency;
+namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Dependency\Interfaces\EntryCollectionInterface;
-use ConstanzeStandard\Dependency\Interfaces\EntryInterface;
+use ConstanzeStandard\Container\Interfaces\EntryCollectionInterface;
+use ConstanzeStandard\Container\Interfaces\EntryInterface;
 use RuntimeException;
 
 class EntryCollection implements EntryCollectionInterface
@@ -46,11 +46,26 @@ class EntryCollection implements EntryCollectionInterface
      * 
      * @param EntryInterface $entry
      * 
-     * @return EntryInterface
+     * @return self
      */
     public function add(EntryInterface $entry): EntryInterface
     {
         $this->entries[$entry->getIdentifier()] = $entry;
+        return $entry;
+    }
+
+    /**
+     * Binding an alias to an entry.
+     * 
+     * @param string $alias
+     * @param string $id
+     * 
+     * @return self
+     */
+    public function alias(string $alias, string $id): EntryInterface
+    {
+        $entry = $this->get($id);
+        $this->entries[$alias] = $entry;
         return $entry;
     }
 

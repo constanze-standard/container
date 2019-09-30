@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency\Interfaces;
+namespace ConstanzeStandard\Container\Interfaces;
 
-interface ServiceProviderCollectionInterface
+interface EntryProviderInterface
 {
     /**
-     * Returns true if the service is provided by collection or returns false.
+     * Returns true if the entry is provided by collection or returns false.
      * 
      * @param string $id
      * 
@@ -30,20 +30,11 @@ interface ServiceProviderCollectionInterface
     public function has(string $id): bool;
 
     /**
-     * Add a service provider to collection.
-     * 
-     * @param ServiceProviderInterface $serviceProvider
-     * 
-     * @return self
-     */
-    public function add(ServiceProviderInterface $serviceProvider): self;
-
-    /**
      * Register items with the container.
      * 
      * @param ContainerInterface $container
      * 
      * @return void
      */
-    public function register($id);
+    public function register(ContainerInterface $container);
 }

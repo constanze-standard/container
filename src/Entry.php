@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency;
+namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Dependency\Interfaces\EntryInterface;
+use ConstanzeStandard\Container\Interfaces\EntryInterface;
 
 class Entry implements EntryInterface
 {
@@ -96,10 +96,12 @@ class Entry implements EntryInterface
      */
     public function addArguments(...$arguments): EntryInterface
     {
-        $this->arguments = array_merge(
-            $this->arguments,
-            array_values($arguments)
-        );
+        if ($this->isDefinition) {
+            $this->arguments = array_merge(
+                $this->arguments,
+                array_values($arguments)
+            );
+        }
 
         return $this;
     }

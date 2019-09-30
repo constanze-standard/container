@@ -16,24 +16,24 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency;
+namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Dependency\Interfaces\BootableServiceProviderInterface;
-use ConstanzeStandard\Dependency\Interfaces\ContainerInterface;
-use ConstanzeStandard\Dependency\Interfaces\ServiceProviderCollectionInterface;
-use ConstanzeStandard\Dependency\Interfaces\ServiceProviderInterface;
+use ConstanzeStandard\Container\Interfaces\BootableEntryProviderInterface;
+use ConstanzeStandard\Container\Interfaces\ContainerInterface;
+use ConstanzeStandard\Container\Interfaces\EntryProviderCollectionInterface;
+use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
 
-class ServiceProviderCollection implements ServiceProviderCollectionInterface
+class EntryProviderCollection implements EntryProviderCollectionInterface
 {
     /**
-     * service provides.
+     * entry provides.
      * 
-     * @var ServiceProviderInterface[]
+     * @var EntryProviderInterface[]
      */
-    private $serviceProviders = [];
+    private $entryProviders = [];
 
     /**
-     * Registered service provides names.
+     * Registered entry provides names.
      * 
      * @var string[]
      */
@@ -55,7 +55,7 @@ class ServiceProviderCollection implements ServiceProviderCollectionInterface
     }
 
     /**
-     * Returns true if the service is provided by collection or returns false.
+     * Returns true if the entry is provided by collection or returns false.
      * 
      * @param string $id
      * 
@@ -63,8 +63,8 @@ class ServiceProviderCollection implements ServiceProviderCollectionInterface
      */
     public function has(string $id): bool
     {
-        foreach ($this->serviceProviders as $serviceProvider) {
-            if ($serviceProvider->has($id)) {
+        foreach ($this->entryProviders as $entryProvider) {
+            if ($entryProvider->has($id)) {
                 return true;
             }
         }
@@ -73,23 +73,23 @@ class ServiceProviderCollection implements ServiceProviderCollectionInterface
     }
 
     /**
-     * Add a service provider to collection.
+     * Add a entry provider to collection.
      * 
-     * @param ServiceProviderInterface $serviceProvider
+     * @param EntryProviderInterface $entryProvider
      * 
      * @return self
      */
-    public function add(ServiceProviderInterface $serviceProvider): ServiceProviderCollectionInterface
+    public function add(EntryProviderInterface $entryProvider): EntryProviderCollectionInterface
     {
-        if (in_array($serviceProvider, $this->serviceProviders, true)) {
+        if (in_array($entryProvider, $this->entryProviders, true)) {
             return $this;
         }
 
-        if ($serviceProvider instanceof BootableServiceProviderInterface) {
-            $serviceProvider->boot($this->container);
+        if ($entryProvider instanceof BootableEntryProviderInterface) {
+            $entryProvider->boot($this->container);
         }
 
-        $this->serviceProviders[] = $serviceProvider;
+        $this->entryProviders[] = $entryProvider;
         return $this;
     }
 
@@ -102,14 +102,14 @@ class ServiceProviderCollection implements ServiceProviderCollectionInterface
      */
     public function register($id)
     {
-        foreach ($this->serviceProviders as $serviceProvider) {
-            $providerName = get_class($serviceProvider);
+        foreach ($this->entryProviders as $entryProvider) {
+            $providerName = get_class($entryProvider);
             if (
                 ! in_array($providerName, $this->registered, true) &&
-                $serviceProvider->has($id)
+                $entryProvider->has($id)
             ) {
                 // don't break
-                $serviceProvider->register($this->container);
+                $entryProvider->register($this->container);
                 $this->registered[] = $providerName;
             }
         }

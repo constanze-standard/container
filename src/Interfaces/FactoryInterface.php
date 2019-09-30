@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace ConstanzeStandard\Dependency\Interfaces;
+namespace ConstanzeStandard\Container\Interfaces;
 
 interface FactoryInterface
 {
