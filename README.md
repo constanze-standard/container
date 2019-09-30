@@ -1,5 +1,4 @@
 Constanze Standard: Container 是符合 FIG PSR-11 标准的 PHP 容器组件。
-# Beige PSR-11
 
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/constanze-standard/container/blob/master/LICENSE)
 [![Coverage 100%](https://img.shields.io/azure-devops/coverage/swellaby/opensource/25.svg)](https://github.com/constanze-standard/container)
