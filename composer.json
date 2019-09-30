@@ -7,10 +7,7 @@
         "psr-11",
         "service",
         "dependency",
-        "service-provider",
-        "di",
-        "invoker",
-        "ioc"
+        "service-provider"
     ],
     "type": "library",
     "license": "Apache-2.0",

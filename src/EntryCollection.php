@@ -94,6 +94,16 @@ class EntryCollection implements EntryCollectionInterface
     }
 
     /**
+     * Remove a entry from collection.
+     * 
+     * @param string $id
+     */
+    public function remove(string $id)
+    {
+        unset($this->entries[$id]);
+    }
+
+    /**
      * Handle instantiation and return value.
      * 
      * @param string $id

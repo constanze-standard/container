@@ -18,6 +18,7 @@
 
 namespace ConstanzeStandard\Container;
 
+use ArrayAccess;
 use ConstanzeStandard\Container\Exception\NotFoundException;
 use ConstanzeStandard\Container\Interfaces\ContainerInterface;
 use ConstanzeStandard\Container\Interfaces\EntryCollectionInterface;
@@ -27,14 +28,14 @@ use ConstanzeStandard\Container\Interfaces\EntryProviderCollectionInterface;
 use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
 use InvalidArgumentException;
 
-class Container implements ContainerInterface, FactoryInterface
+class Container implements ContainerInterface, FactoryInterface, ArrayAccess
 {
     /**
      * The entry aggregate.
      * 
      * @var EntryCollectionInterface
      */
-    private $entryAggregate;
+    private $entryCollection;
 
     /**
      * The entry provider collection.
@@ -51,15 +52,15 @@ class Container implements ContainerInterface, FactoryInterface
     private $entryArguments = [];
 
     /**
-     * @param EntryCollectionInterface|null $entryAggregate
+     * @param EntryCollectionInterface|null $entryCollection
      * @param EntryProviderCollectionInterface|null $entryProviderCollection
      */
     public function __construct(
-        EntryCollectionInterface $entryAggregate = null,
+        EntryCollectionInterface $entryCollection = null,
         EntryProviderCollectionInterface $entryProviderCollection = null
     )
     {
-        $this->entryAggregate = $entryAggregate ?? new EntryCollection();
+        $this->entryCollection = $entryCollection ?? new EntryCollection();
         $this->entryProviderCollection = $entryProviderCollection ?? 
             new EntryProviderCollection($this);
     }
@@ -73,7 +74,7 @@ class Container implements ContainerInterface, FactoryInterface
      */
     public function addEntry(EntryInterface $entry)
     {
-        return $this->entryAggregate
+        return $this->entryCollection
             ->add($entry)
             ->addArguments(...$this->entryArguments);
     }
@@ -117,13 +118,13 @@ class Container implements ContainerInterface, FactoryInterface
      */
     public function make(string $id, ...$parameters)
     {
-        if ($this->entryAggregate->has($id)) {
-            return $this->entryAggregate->resolve($id, $parameters, true);
+        if ($this->entryCollection->has($id)) {
+            return $this->entryCollection->resolve($id, $parameters, true);
         }
 
         if ($this->entryProviderCollection->has($id)) {
             $this->entryProviderCollection->register($id);
-            return $this->entryAggregate->resolve($id, $parameters, true);
+            return $this->entryCollection->resolve($id, $parameters, true);
         }
 
         throw new NotFoundException("No entry found for '$id'");
@@ -144,6 +145,16 @@ class Container implements ContainerInterface, FactoryInterface
     }
 
     /**
+     * Remove an entry from container.
+     * 
+     * @param string $id
+     */
+    public function remove(string $id)
+    {
+        $this->entryProviderCollection->remove($id);
+    }
+
+    /**
      * Finds an entry of the container by its identifier and returns it.
      *
      * @param string $id Identifier of the entry to look for.
@@ -159,13 +170,13 @@ class Container implements ContainerInterface, FactoryInterface
             throw new InvalidArgumentException('The first parameter of `'.static::class . '::get` must be string.');
         }
 
-        if ($this->entryAggregate->has($id)) {
-            return $this->entryAggregate->get($id);
+        if ($this->entryCollection->has($id)) {
+            return $this->entryCollection->get($id);
         }
 
         if ($this->entryProviderCollection->has($id)) {
             $this->entryProviderCollection->register($id);
-            return $this->entryAggregate->get($id);
+            return $this->entryCollection->get($id);
         }
 
         throw new NotFoundException("No entry found for '$id'");
@@ -189,12 +200,32 @@ class Container implements ContainerInterface, FactoryInterface
         }
 
         if (
-            $this->entryAggregate->has($id) ||
+            $this->entryCollection->has($id) ||
             $this->entryProviderCollection->has($id)
         ) {
             return true;
         }
 
         return false;
+    }
+
+    public function offsetExists($offset): bool
+    {
+        return $this->has($offset);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->add($offset, $value);
+    }
+
+    public function offsetUnset($offset)
+    {
+        $this->remove($offset);
     }
 }
