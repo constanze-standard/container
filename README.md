@@ -1,17 +1,16 @@
-Constanze Standard: Container 是符合 FIG PSR-11 标准的 PHP 容器组件。
-
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/constanze-standard/container/blob/master/LICENSE)
 [![Coverage 100%](https://img.shields.io/azure-devops/coverage/swellaby/opensource/25.svg)](https://github.com/constanze-standard/container)
 
-## 简介
-Beige PSR-11 是一个轻量级的 PSR-11 标准容器。它的目标是将容器的使用变得更加简单和纯粹，它能够接受任意类型的数据，并将 Definition 分离。
+## 我们只做专一的工作
+Constanze Standard: Container 是一个简单专一的 [PSR-11](https://www.php-fig.org/psr/psr-11) 容器组件，它提供容器化解决方案所需的基础功能和基本组件，包括：容器（`Container`）和服务提供接口（`Service Provider`）。
 
-## 安装
+## 如何获取组件？
+请使用 [`composer`](https://getcomposer.org/) 安装组件，这可能需要几分钟的时间。
 ```
 composer require constanze-standard/container
 ```
 
-## 使用
+## 开始使用
 引入并创建容器的实例：
 ```php
 use Beige\Psr11\Container;
