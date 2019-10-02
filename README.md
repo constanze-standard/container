@@ -86,17 +86,106 @@ var_dump($result);  // FOO VALUE
 ```
 make 方法允许你为 Definition 添加任意数量的`自定义参数`，但需要注意的是，如果自定义参数没有默认值的话，用 get 方法获取时会出现错误。
 
-make 方法在对服务创建的控制反转（IoC）中有极大的作用，它使容器有机会去控制那些非单例的对象的创建，通过依赖查找的方式使系统中所有的对象创建工作，全部移交给容器负责。
+make 方法在对服务创建的控制反转（IoC）中有极大的作用，它使容器有机会去控制那些非单例对象的创建，通过依赖查找的方式使系统中所有的对象创建工作，全部移交给容器完成。
 
-### 静态绑定参数
+### 静态绑定的参数
 有时，一些 definition 需要额外的数据源用来生成 entry，这时，我们可以通过 `addArguments` 方法为 definition  提前绑定一些`静态参数`。
 ```php
 $container->add('foo', function ($container, $customArg) {
-    return 'bar';
+    return $customArg;
 }, true)->addArguments($container);
 
 $container->make('foo', 'CustomArg');
 ```
 `addArguments` 方法接受任意数量的参数，这些参数将在 definition 被调用时直接作为参数按顺序传入。这些参数将排在自定义参数之前。
 
+我们也可以通过 Container 的 `withEntryArguments` 方法，为之后的每一个 Entry 添加一个或多个统一的静态参数。
+```php
+$container->withEntryArguments($container);
+
+$container->add('helloFoo', function ($container) {
+    $foo = $container->get('Foo');
+    return 'Hello ' . $foo;
+}, true)
+```
+
 需要注意的是，当我们使用 make 方法时，不需要传递静态参数，只需要按顺序传递自定义参数就可以了。
+
+### Entry 的提供者（Entry Provider）
+在某些业务层面中，服务是以组的形式存在的，组与组之间有着比较独立的依赖关系，面对这种情况，将所有的 entries 和 definitions “一股脑”的装入容器是不太聪明的做法。而 Entry Provider 就是为这种场景而设计的功能。
+
+一个 EntryProvider 承载了一系列针对 Container 的读写或配置操作：
+```php
+use ConstanzeStandard\Container\AbstractEntryProvider;
+use ConstanzeStandard\Container\Container;
+
+class CustomEntryProvider extends AbstractEntryProvider
+{
+    protected $provides = [
+        'foo'
+    ];
+
+    public function register(ContainerInterface $container)
+    {
+        $container->add('foo', function () {
+            return 'bar';
+        }, true);
+    }
+}
+
+$entryProvider = new EntryProvider();
+$container->addEntryProvider($entryProvider);
+
+$container->get('foo');  // bar
+```
+定义一个 EntryProvider，你只需要继承 `\ConstanzeStandard\Container\AbstractEntryProvider` 然后在 `register` 中操作 Container. 最后，将 EntryProvider 对象通过 Container 的 `addEntryProvider` 方法传入即可。
+
+需要注意的是，你必须在 `provides` 属性中指明当前的 provider 提供了哪些 entry，否则将不会生效。
+
+### 预加载的 provider (Bootable Entry Provider)
+如果你希望在 provider 放入容器时，立刻注册一些 entry，或者做一些预先的配置工作，那么你可以选择使用 `BootableEntryProvider`，这是一种特殊的 EntryProvider，它有一个额外的方法 `boot`, 在 provider 加入容器时会立刻被执行。
+```php
+...
+use ConstanzeStandard\Container\Interfaces\BootableEntryProviderInterface;
+
+class CustomEntryProvider extends AbstractEntryProvider implements BootableEntryProviderInterface
+{
+    protected $provides = [
+        'foo'
+    ];
+
+    public function boot(ContainerInterface $container)
+    {
+        $container->add('publicService', function () {
+            return new SomeService();
+        }, true);
+    }
+
+    public function register(ContainerInterface $container)
+    {
+        $container->add('foo', function () {
+            return 'bar';
+        }, true);
+    }
+}
+
+$entryProvider = new EntryProvider();
+$container->addEntryProvider($entryProvider);
+```
+当 `addEntryProvider` 方法被调用时，`publicService` 就被立刻注册到容器中了，而 `foo` 则需要等到自身被调用时，才会进行注册。
+
+## 容器也是 PHP 数组
+Container 内部实现了 `\ArrayAccess` 接口，所以它也具有和 PHP 数组相同的特性，我们可以使用数组操作，对容器的进行读写操作（只支持静态内容，不支持 definition）。
+```php
+$container = new Container;
+
+$container['foo'] = 'bar';  // 添加一个名为 foo 的 entry
+$foo = $container['foo'];  // 获取 foo 的内容
+isset($container['foo']);  // 判断 foo 是否存在
+unset($container['foo']);  // 从容器中删除 foo
+```
+
+## 与我取得联系
+如果你对这款组件有任何疑问或建议，请与我取得联系：
+
+Alex <a href="mailto:omytty.alex@gmail.com">omytty.alex@gmail.com</a>
