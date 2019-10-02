@@ -28,3 +28,6 @@ $container->add('foo', 'bar');
 $foo = $container->get('foo');
 var_dump($foo);  // foo
 ```
+以上是 Container 的一个基本使用场景，当我们从 Container 获取内容（`entry`）时，默认情况下，容器会将传入的内容原封不动的返回。
+
+像大部分容器组件一样，Container 也支持 `entry` 的 `definition`, definition 是一个内容的定义，它是一个可调用对象，其中定义了 entry 的创建步骤，最后将 entry 返回。当我们通过 get 方法获取 entry 时，Container 会先调用 definition 对象生成 entry，然后再将 entry 放入容器。
