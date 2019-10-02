@@ -115,6 +115,8 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
      * 
      * @param string $id
      * @param mixed $parameters
+     * 
+     * @return mixed
      */
     public function make(string $id, ...$parameters)
     {
@@ -151,7 +153,7 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
      */
     public function remove(string $id)
     {
-        $this->entryProviderCollection->remove($id);
+        $this->entryCollection->remove($id);
     }
 
     /**

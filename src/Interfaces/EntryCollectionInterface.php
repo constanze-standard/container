@@ -46,4 +46,32 @@ interface EntryCollectionInterface
      * @return EntryInterface
      */
     public function add(EntryInterface $entry): EntryInterface;
+
+    /**
+     * Remove a entry from collection.
+     * 
+     * @param string $id
+     */
+    public function remove(string $id);
+
+    /**
+     * Handle instantiation and return value.
+     * 
+     * @param string $id
+     * @param array $parameters
+     * @param bool $new
+     * 
+     * @return mixed
+     */
+    public function resolve(string $id, array $parameters = [], bool $new = false);
+
+    /**
+     * Binding an alias to an entry.
+     * 
+     * @param string $alias
+     * @param string $id
+     * 
+     * @return self
+     */
+    public function alias(string $alias, string $id): EntryInterface;
 }

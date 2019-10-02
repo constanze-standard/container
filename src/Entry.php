@@ -122,9 +122,7 @@ class Entry implements EntryInterface
 
         $this->resolved = true;
         $this->value = call_user_func(
-            $this->entry,
-            ...$this->arguments,
-            ...$arguments
+            $this->entry, ...$this->arguments, ...$arguments
         );
 
         return $this->value;

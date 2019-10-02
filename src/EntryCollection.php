@@ -64,7 +64,7 @@ class EntryCollection implements EntryCollectionInterface
      */
     public function alias(string $alias, string $id): EntryInterface
     {
-        $entry = $this->get($id);
+        $entry = $this->getEntry($id);
         $this->entries[$alias] = $entry;
         return $entry;
     }
