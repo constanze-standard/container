@@ -421,4 +421,12 @@ class ContainerTest extends AbstractTest
         $container = new Container($entryCollection, $entryProviderCollection);
         $container['id'];
     }
+
+    public function testAlias()
+    {
+        $container = new Container();
+        $container->add('foo', 123);
+        $container->alias('bar', 'foo');
+        $this->assertEquals(123, $container->get('bar'));
+    }
 }
