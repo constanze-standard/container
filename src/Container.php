@@ -157,6 +157,19 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
     }
 
     /**
+     * Binding an alias to an entry.
+     * 
+     * @param string $alias
+     * @param string $id
+     * 
+     * @return EntryInterface
+     */
+    public function alias(string $alias, string $id): EntryInterface
+    {
+        return $this->entryCollection->alias($alias, $id);
+    }
+
+    /**
      * Finds an entry of the container by its identifier and returns it.
      *
      * @param string $id Identifier of the entry to look for.

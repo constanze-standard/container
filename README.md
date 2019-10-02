@@ -17,7 +17,7 @@ composer require constanze-standard/container
 ## 案例演示
 
 ### 添加和获取
-通过案例演示，有助于我们研究和理解 Container 的工作方式，现在我们向 Container 中，以 `foo` 为索引添加一个静态内容 `bar`，然后再将内容从 Container 中取出。
+通过案例演示，有助于我们研究和理解 Container 的工作方式，现在我们向 Container 中，添加一个名为 `foo` 的静态内容（`bar`），然后再将内容从 Container 中取出。
 ```php
 <?php declare(strict_types=1);
 
@@ -55,4 +55,48 @@ $container->add('foo', function () {
 $foo = $container->get('foo');
 var_dump($foo);  // foo
 ```
-实际上，add 方法内部分别做了与前两例相似的操作，这是一种便利的代理方法。
+实际上，add 方法内部分别做了与前两例相似的操作，这是一种便利且被经常使用的代理方法。
+
+### 对 Entry 使用别名
+我们可以为一个 entry 定义多个不同的别名，Container 将保存这些别名，并将它们指向同一个 entry.
+```php
+$container->alias('aliasName', 'entryName');
+```
+从 Container 中以 `aliasName` 获取的值 与 `entryName` 的内容是相同的。
+
+### 判断和删除操作
+Container 支持 PSR-11 中所定义的 has 方法，用来判断一个 entry 是否存在。同时 Container 也支持删除指定名称的 entry 的 `remove` 方法。
+```php
+$container->has('foo');  // 判断名为 foo 的 entry 是否存在
+$container->remove('foo');  // 从 Container 中删除名为 foo 的 entry
+```
+
+## Definition
+Definition 是很常用的功能，下面介绍一些与 Definition 相关的功能和要点。
+
+### 实例化工厂 Make Factory
+Container 的 `make` 方法允许你控制 entry 的获取方式，在通常情况下，我们用 get 方法获取的内容是全局唯一的，也就是说，entry 只会被创建一次，当我们再次获取时，Container 会直接将之前保存的值返回。如果我们希望重新生成 entry，就可以使用 make 方法。
+```php
+$container->add('foo', function($foo) {
+    return $foo;
+}, true);
+
+$result = $container->make('foo', 'FOO VALUE');
+var_dump($result);  // FOO VALUE
+```
+make 方法允许你为 Definition 添加任意数量的`自定义参数`，但需要注意的是，如果自定义参数没有默认值的话，用 get 方法获取时会出现错误。
+
+make 方法在对服务创建的控制反转（IoC）中有极大的作用，它使容器有机会去控制那些非单例的对象的创建，通过依赖查找的方式使系统中所有的对象创建工作，全部移交给容器负责。
+
+### 静态绑定参数
+有时，一些 definition 需要额外的数据源用来生成 entry，这时，我们可以通过 `addArguments` 方法为 definition  提前绑定一些`静态参数`。
+```php
+$container->add('foo', function ($container, $customArg) {
+    return 'bar';
+}, true)->addArguments($container);
+
+$container->make('foo', 'CustomArg');
+```
+`addArguments` 方法接受任意数量的参数，这些参数将在 definition 被调用时直接作为参数按顺序传入。这些参数将排在自定义参数之前。
+
+需要注意的是，当我们使用 make 方法时，不需要传递静态参数，只需要按顺序传递自定义参数就可以了。
