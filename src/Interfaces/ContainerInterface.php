@@ -58,4 +58,21 @@ interface ContainerInterface extends PsrContainerInterface
      * @return self
      */
     public function addEntryProvider(EntryProviderInterface $entryProvider): self;
+
+    /**
+     * Remove an entry from container.
+     * 
+     * @param string $id
+     */
+    public function remove(string $id);
+
+    /**
+     * Binding an alias to an entry.
+     * 
+     * @param string $alias
+     * @param string $id
+     * 
+     * @return EntryInterface
+     */
+    public function alias(string $alias, string $id): EntryInterface;
 }
