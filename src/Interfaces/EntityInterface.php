@@ -18,23 +18,31 @@
 
 namespace ConstanzeStandard\Container\Interfaces;
 
-interface EntryProviderInterface
+interface EntityInterface
 {
     /**
-     * Returns true if the entry is provided by collection or returns false.
+     * Get the entity id.
      * 
-     * @param string $id
-     * 
-     * @return bool
+     * @return string
      */
-    public function has(string $id): bool;
+    public function getId(): string;
 
     /**
-     * Register items with the container.
+     * Handle instantiation and return value.
      * 
-     * @param ContainerInterface $container
+     * @param array $arguments Parameters of definition.
+     * @param bool $new
      * 
-     * @return void
+     * @return mixed
      */
-    public function register(ContainerInterface $container);
+    public function resolve(array $arguments = [], bool $new = false): mixed;
+
+    /**
+     * Add resolve arguments.
+     * 
+     * @param mixed ...$arguments
+     * 
+     * @return self
+     */
+    public function addArguments(...$arguments): self;
 }

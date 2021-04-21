@@ -18,71 +18,73 @@
 
 namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Container\Interfaces\EntryInterface;
+use ConstanzeStandard\Container\Interfaces\EntityInterface;
 
-class Entry implements EntryInterface
+class Entity implements EntityInterface
 {
+    const TYPE_VALUE = 1;
+
+    const TYPE_DEFINITION = 2;
+
     /**
-     * The entry id.
+     * The entity id.
      * 
      * @var string
      */
-    private $id;
+    private string $id;
 
     /**
-     * The entry.
+     * The entity.
      * 
      * @var mixed
      */
-    private $entry;
+    private mixed $entity;
 
     /**
-     * The entry is a definition.
-     * 
-     * @var bool
+     * @var string Entity type
      */
-    private $isDefinition;
+    private string $type;
 
     /**
      * Resolved value.
      * 
      * @var mixed
      */
-    private $resolved = false;
+    private mixed $resolved = false;
 
     /**
-     * Value of entry.
+     * Value of entity.
      * 
      * @var mixed
      */
-    private $value;
+    private mixed $value;
 
     /**
      * Resolve arguments.
      * 
      * @var array
      */
-    private $arguments = [];
+    private array $arguments = [];
 
     /**
      * @param string $id
-     * @param mixed $entry
+     * @param mixed $entity
      * @param bool $isDefinition
      */
-    public function __construct(string $id, $entry, bool $isDefinition = false)
+    public function __construct(string $id, mixed $entity, int $type = self::TYPE_VALUE)
     {
         $this->id = $id;
-        $this->entry = $entry;
-        $this->isDefinition = $isDefinition ? is_callable($entry) : false;
-        $this->value = $this->isDefinition ? null : $entry;
+        $this->entity = $entity;
+        $this->type = $type;
+        $this->value = $this->isDefinition ? null : $entity;
     }
 
     /**
-     * Get the entry id.
+     * Get the entity id.
      * 
      * @return string
      */
-    public function getIdentifier(): string
+    public function getId(): string
     {
         return $this->id;
     }
@@ -94,8 +96,9 @@ class Entry implements EntryInterface
      * 
      * @return self
      */
-    public function addArguments(...$arguments): EntryInterface
+    public function addArguments(...$arguments): EntityInterface
     {
+        if ()
         if ($this->isDefinition) {
             $this->arguments = array_merge(
                 $this->arguments,
@@ -103,7 +106,12 @@ class Entry implements EntryInterface
             );
         }
 
-        return $this;
+        return (clone $this);
+    }
+
+    public function isDefinition()
+    {
+        return $this->type === self::TYPE_DEFINITION;
     }
 
     /**
@@ -114,7 +122,7 @@ class Entry implements EntryInterface
      * 
      * @return mixed
      */
-    public function resolve(array $arguments = [], bool $new = false)
+    public function resolve(array $arguments = [], bool $new = false): mixed
     {
         if (! $this->isDefinition || ($this->resolved && $new === false)) {
             return $this->value;
@@ -122,7 +130,7 @@ class Entry implements EntryInterface
 
         $this->resolved = true;
         $this->value = call_user_func(
-            $this->entry, ...$this->arguments, ...$arguments
+            $this->entity, ...$this->arguments, ...$arguments
         );
 
         return $this->value;

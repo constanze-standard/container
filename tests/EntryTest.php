@@ -10,14 +10,14 @@ class EntryTest extends AbstractTest
 {
     public function testGetIdentifier()
     {
-        $entry = new Entry('id1', '123');
-        $id = $entry->getIdentifier();
+        $entry = new Entity('id1', '123');
+        $id = $entry->getId();
         $this->assertEquals($id, 'id1');
     }
 
     public function testResolveWithDefinitionWithoutNew()
     {
-        $entry = new Entry('id1', function($first, $second) {
+        $entry = new Entity('id1', function($first, $second) {
             static $a = 3;
             $this->assertEquals($first, 1);
             $this->assertEquals($second, 2);
@@ -35,7 +35,7 @@ class EntryTest extends AbstractTest
         $func = function() {
             return 3;
         };
-        $entry = new Entry('id1', $func, false);
+        $entry = new Entity('id1', $func, false);
         $entry->addArguments(1, 2);
         $result = $entry->resolve();
         $this->assertEquals($result, $func);
@@ -43,7 +43,7 @@ class EntryTest extends AbstractTest
 
     public function testResolveWithDefinitionWithNewWithArguments()
     {
-        $entry = new Entry('id1', function($first, $second, $t, $f) {
+        $entry = new Entity('id1', function($first, $second, $t, $f) {
             static $a = 3;
             $this->assertEquals($first, 1);
             $this->assertEquals($second, 2);

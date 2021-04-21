@@ -11,8 +11,8 @@ class AbstractEntryProviderTest extends AbstractTest
 {
     public function testHas()
     {
-        $entryProvider = new class() extends AbstractEntryProvider {
-            protected $provides = [
+        $entryProvider = new class() extends AbstractEntityProvider {
+            protected array $provides = [
                 'id1', 'id2'
             ];
 

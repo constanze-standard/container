@@ -18,7 +18,7 @@
 
 namespace ConstanzeStandard\Container\Interfaces;
 
-interface EntryCollectionInterface
+interface EntityCollectionInterface
 {
     /**
      * Returns true if the entry exist or return false.
@@ -36,16 +36,16 @@ interface EntryCollectionInterface
      * 
      * @return mixed
      */
-    public function get(string $id);
+    public function get(string $id): mixed;
 
     /**
      * Add a entry to aggregate.
      * 
-     * @param EntryInterface $entry
+     * @param EntityInterface $entity
      * 
-     * @return EntryInterface
+     * @return EntityInterface
      */
-    public function add(EntryInterface $entry): EntryInterface;
+    public function add(EntityInterface $entity): EntityInterface;
 
     /**
      * Remove a entry from collection.
@@ -63,7 +63,7 @@ interface EntryCollectionInterface
      * 
      * @return mixed
      */
-    public function resolve(string $id, array $parameters = [], bool $new = false);
+    public function resolve(string $id, array $parameters = [], bool $new = false): mixed;
 
     /**
      * Binding an alias to an entry.
@@ -71,7 +71,7 @@ interface EntryCollectionInterface
      * @param string $alias
      * @param string $id
      * 
-     * @return self
+     * @return EntityInterface
      */
-    public function alias(string $alias, string $id): EntryInterface;
+    public function alias(string $alias, string $id): EntityInterface;
 }

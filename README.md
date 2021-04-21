@@ -26,7 +26,7 @@ use ConstanzeStandard\Container\Entry;
 $container = new Container;
 
 $entry = new Entry('foo', 'bar');
-$container->addEntry($entry);
+$container->addEntity($entry);
 
 $foo = $container->get('foo');
 var_dump($foo);  // foo
@@ -38,7 +38,7 @@ var_dump($foo);  // foo
 $entry = new Entry('foo', function () {
     return 'bar';
 }, true);
-$container->addEntry($entry);
+$container->addEntity($entry);
 
 $foo = $container->get('foo');
 var_dump($foo);  // foo

@@ -23,24 +23,24 @@ use Psr\Container\ContainerInterface as PsrContainerInterface;
 interface ContainerInterface extends PsrContainerInterface
 {
     /**
-     * Add a entry to entry aggregate.
+     * Add a entity to entry aggregate.
      * 
-     * @param EntryInterface $entry
+     * @param EntityInterface $entry
      * 
-     * @return EntryInterface
+     * @return EntityInterface
      */
-    public function addEntry(EntryInterface $entry);
+    public function addEntity(EntityInterface $entry): EntityInterface;
 
     /**
      * Add a entry or definition of entry to container.
      * 
      * @param string $id Identifier of the entry.
-     * @param mixed $entry A entry or definition of entry.
-     * @param bool $isDefinition Entry is definition?
+     * @param mixed $entity A entry or definition of entry.
+     * @param bool $isDefinition Entity is definition?
      * 
-     * @return EntryInterface
+     * @return EntityInterface
      */
-    public function add(string $id, $entry, bool $isDefinition = false);
+    public function add(string $id, mixed $entity, bool $isDefinition = false): EntityInterface;
 
     /**
      * Build a new entry by definition id and parameters.
@@ -53,11 +53,11 @@ interface ContainerInterface extends PsrContainerInterface
     /**
      * Add a entry provider.
      * 
-     * @param EntryProviderInterface $entryProvider
+     * @param EntityProviderInterface $entryProvider
      * 
      * @return self
      */
-    public function addEntryProvider(EntryProviderInterface $entryProvider): self;
+    public function addEntryProvider(EntityProviderInterface $entryProvider): self;
 
     /**
      * Remove an entry from container.
@@ -72,7 +72,7 @@ interface ContainerInterface extends PsrContainerInterface
      * @param string $alias
      * @param string $id
      * 
-     * @return EntryInterface
+     * @return EntityInterface
      */
-    public function alias(string $alias, string $id): EntryInterface;
+    public function alias(string $alias, string $id): EntityInterface;
 }

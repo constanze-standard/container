@@ -3,9 +3,9 @@
 namespace ConstanzeStandard\Container;
 
 use AbstractTest;
-use ConstanzeStandard\Container\Interfaces\BootableEntryProviderInterface;
+use ConstanzeStandard\Container\Interfaces\BootableEntityProviderInterface;
 use ConstanzeStandard\Container\Interfaces\ContainerInterface;
-use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
+use ConstanzeStandard\Container\Interfaces\EntityProviderInterface;
 
 require_once __DIR__ . '/AbstractTest.php';
 
@@ -16,7 +16,7 @@ class EntryProviderCollectionTest extends AbstractTest
         [$entryProvider, $container] = $this->getEntryProviderAndContainer();
         $entryProvider->expects($this->once())->method('has')->with('id')->willReturn(true);
 
-        $entryProviderCollection = new EntryProviderCollection($container);
+        $entryProviderCollection = new EntityProviderCollection($container);
         $entryProviderCollection->add($entryProvider);
         $entryProviderCollection->register('id');
         $registered = $this->getProperty($entryProviderCollection, 'registered');
@@ -26,15 +26,15 @@ class EntryProviderCollectionTest extends AbstractTest
     public function testRegisterWithEntryProviderWithBootable()
     {
         /**
-         * @var EntryProviderInterface $entryProvider
+         * @var EntityProviderInterface $entryProvider
          * @var ContainerInterface $container
          */
         [, $container] = $this->getEntryProviderAndContainer();
-        $entryProvider = $this->createMock(BootableEntryProviderInterface::class);
+        $entryProvider = $this->createMock(BootableEntityProviderInterface::class);
         $entryProvider->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryProvider->expects($this->once())->method('boot')->with($container);
 
-        $entryProviderCollection = new EntryProviderCollection($container);
+        $entryProviderCollection = new EntityProviderCollection($container);
         $entryProviderCollection->add($entryProvider);
         $entryProviderCollection->register('id');
         $registered = $this->getProperty($entryProviderCollection, 'registered');
@@ -45,7 +45,7 @@ class EntryProviderCollectionTest extends AbstractTest
     {
         [$entryProvider, $container] = $this->getEntryProviderAndContainer();
 
-        $entryProviderCollection = new EntryProviderCollection($container);
+        $entryProviderCollection = new EntityProviderCollection($container);
         $entryProviderCollection->add($entryProvider);
         $result = $entryProviderCollection->add($entryProvider);
         $entryProviders = $this->getProperty($entryProviderCollection, 'entryProviders');
@@ -57,7 +57,7 @@ class EntryProviderCollectionTest extends AbstractTest
     {
         [$entryProvider, $container] = $this->getEntryProviderAndContainer();
         $entryProvider->expects($this->once())->method('has')->with('id')->willReturn(true);
-        $entryProviderCollection = new EntryProviderCollection($container);
+        $entryProviderCollection = new EntityProviderCollection($container);
         $entryProviderCollection->add($entryProvider);
         $result = $entryProviderCollection->has('id');
         $this->assertTrue($result);
@@ -67,7 +67,7 @@ class EntryProviderCollectionTest extends AbstractTest
     {
         [$entryProvider, $container] = $this->getEntryProviderAndContainer();
         $entryProvider->expects($this->exactly(1))->method('has')->with('id_nothing')->willReturn(false);
-        $entryProviderCollection = new EntryProviderCollection($container);
+        $entryProviderCollection = new EntityProviderCollection($container);
         $entryProviderCollection->add($entryProvider);
         $result = $entryProviderCollection->has('id_nothing');
         $this->assertFalse($result);
@@ -75,10 +75,10 @@ class EntryProviderCollectionTest extends AbstractTest
 
     private function getEntryProviderAndContainer()
     {
-        $entryProvider = $this->createMock(EntryProviderInterface::class);
+        $entryProvider = $this->createMock(EntityProviderInterface::class);
         $container = $this->createMock(ContainerInterface::class);
         /**
-         * @var EntryProviderInterface $entryProvider
+         * @var EntityProviderInterface $entryProvider
          * @var ContainerInterface $container
          */
         return [$entryProvider, $container];

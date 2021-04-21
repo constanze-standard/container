@@ -18,32 +18,12 @@
 
 namespace ConstanzeStandard\Container\Interfaces;
 
-interface EntryProviderCollectionInterface
+interface BootableEntityProviderInterface extends EntityProviderInterface
 {
     /**
-     * Returns true if the entry is provided by collection or returns false.
-     * 
-     * @param string $id
-     * 
-     * @return bool
-     */
-    public function has(string $id): bool;
-
-    /**
-     * Add a entry provider to collection.
-     * 
-     * @param EntryProviderInterface $entryProvider
-     * 
-     * @return self
-     */
-    public function add(EntryProviderInterface $entryProvider): self;
-
-    /**
-     * Register items with the container.
+     * Provides ability for eager loading of Service Providers.
      * 
      * @param ContainerInterface $container
-     * 
-     * @return void
      */
-    public function register($id);
+    public function boot(ContainerInterface $container);
 }

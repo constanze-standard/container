@@ -18,33 +18,33 @@
 
 namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Container\Interfaces\BootableEntryProviderInterface;
+use ConstanzeStandard\Container\Interfaces\BootableEntityProviderInterface;
 use ConstanzeStandard\Container\Interfaces\ContainerInterface;
-use ConstanzeStandard\Container\Interfaces\EntryProviderCollectionInterface;
-use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
+use ConstanzeStandard\Container\Interfaces\EntityProviderCollectionInterface;
+use ConstanzeStandard\Container\Interfaces\EntityProviderInterface;
 
-class EntryProviderCollection implements EntryProviderCollectionInterface
+class EntityProviderCollection implements EntityProviderCollectionInterface
 {
     /**
-     * entry provides.
+     * entity provides.
      * 
-     * @var EntryProviderInterface[]
+     * @var EntityProviderInterface[]
      */
-    private $entryProviders = [];
+    private array $entityProviders = [];
 
     /**
-     * Registered entry provides names.
+     * Registered entity provides names.
      * 
      * @var string[]
      */
-    private $registered = [];
+    private array $registered = [];
 
     /**
      * The dependency container.
      * 
      * @var ContainerInterface
      */
-    private $container;
+    private ContainerInterface $container;
 
     /**
      * @param ContainerInterface $container The dependency container.
@@ -55,7 +55,7 @@ class EntryProviderCollection implements EntryProviderCollectionInterface
     }
 
     /**
-     * Returns true if the entry is provided by collection or returns false.
+     * Returns true if the entity is provided by collection or returns false.
      * 
      * @param string $id
      * 
@@ -63,53 +63,51 @@ class EntryProviderCollection implements EntryProviderCollectionInterface
      */
     public function has(string $id): bool
     {
-        foreach ($this->entryProviders as $entryProvider) {
-            if ($entryProvider->has($id)) {
+        foreach ($this->entityProviders as $entityProvider) {
+            if ($entityProvider->has($id)) {
                 return true;
             }
         }
-
         return false;
     }
 
     /**
-     * Add a entry provider to collection.
+     * Add a entity provider to collection.
      * 
-     * @param EntryProviderInterface $entryProvider
+     * @param EntityProviderInterface $entityProvider
      * 
-     * @return self
+     * @return EntityProviderCollectionInterface
      */
-    public function add(EntryProviderInterface $entryProvider): EntryProviderCollectionInterface
+    public function add(EntityProviderInterface $entityProvider): EntityProviderCollectionInterface
     {
-        if (in_array($entryProvider, $this->entryProviders, true)) {
+        if (in_array($entityProvider, $this->entityProviders, true)) {
             return $this;
         }
 
-        if ($entryProvider instanceof BootableEntryProviderInterface) {
-            $entryProvider->boot($this->container);
+        if ($entityProvider instanceof BootableEntityProviderInterface) {
+            $entityProvider->boot($this->container);
         }
 
-        $this->entryProviders[] = $entryProvider;
+        $this->entityProviders[] = $entityProvider;
         return $this;
     }
 
     /**
      * Register items with the container.
-     * 
-     * @param ContainerInterface $container
-     * 
+     *
+     * @param $id
      * @return void
      */
     public function register($id)
     {
-        foreach ($this->entryProviders as $entryProvider) {
-            $providerName = get_class($entryProvider);
+        foreach ($this->entityProviders as $entityProvider) {
+            $providerName = get_class($entityProvider);
             if (
                 ! in_array($providerName, $this->registered, true) &&
-                $entryProvider->has($id)
+                $entityProvider->has($id)
             ) {
                 // don't break
-                $entryProvider->register($this->container);
+                $entityProvider->register($this->container);
                 $this->registered[] = $providerName;
             }
         }

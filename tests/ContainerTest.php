@@ -3,10 +3,10 @@
 namespace ConstanzeStandard\Container;
 
 use AbstractTest;
-use ConstanzeStandard\Container\Interfaces\EntryCollectionInterface;
-use ConstanzeStandard\Container\Interfaces\EntryInterface;
-use ConstanzeStandard\Container\Interfaces\EntryProviderCollectionInterface;
-use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
+use ConstanzeStandard\Container\Interfaces\EntityCollectionInterface;
+use ConstanzeStandard\Container\Interfaces\EntityInterface;
+use ConstanzeStandard\Container\Interfaces\EntityProviderCollectionInterface;
+use ConstanzeStandard\Container\Interfaces\EntityProviderInterface;
 
 require_once __DIR__ . '/AbstractTest.php';
 
@@ -15,19 +15,19 @@ class ContainerTest extends AbstractTest
     public function testAddEntry()
     {
         /**
-         * @var EntryInterface $entry
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityInterface $entry
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entry = $this->createMock(EntryInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        // $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entry = $this->createMock(EntityInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        // $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
 
         $entry->expects($this->once())->method('addArguments')->willReturn($entry);
         $entryCollection->expects($this->once())->method('add')->with($entry)->willReturn($entry);
 
         $container = new Container($entryCollection);
-        $result = $container->addEntry($entry);
+        $result = $container->addEntity($entry);
         $this->assertEquals($result, $entry);
     }
 
@@ -35,19 +35,19 @@ class ContainerTest extends AbstractTest
     {
         $container = new Container();
         $result = $container->add('id', 'entry');
-        $this->assertInstanceOf(EntryInterface::class, $result);
-        $this->assertEquals($result->getIdentifier(), 'id');
+        $this->assertInstanceOf(EntityInterface::class, $result);
+        $this->assertEquals($result->getId(), 'id');
         $this->assertEquals($result->resolve(), 'entry');
     }
 
     public function testOffsetSet()
     {
         /**
-         * @var EntryInterface $entry
-         * @var EntryCollectionInterface $entryCollection
+         * @var EntityInterface $entry
+         * @var EntityCollectionInterface $entryCollection
          */
-        $entry = $this->createMock(EntryInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
+        $entry = $this->createMock(EntityInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
 
         $entryCollection->expects($this->once())->method('add')->willReturn($entry);
 
@@ -58,13 +58,13 @@ class ContainerTest extends AbstractTest
     public function testWithEntryArguments()
     {
         /**
-         * @var EntryInterface $entry
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityInterface $entry
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entry = $this->createMock(EntryInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        // $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entry = $this->createMock(EntityInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        // $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
 
         $entry->expects($this->once())->method('addArguments')->with(1, 2)->willReturn($entry);
         $entryCollection->expects($this->once())->method('add')->with($entry)->willReturn($entry);
@@ -72,20 +72,20 @@ class ContainerTest extends AbstractTest
         $container = new Container($entryCollection);
         $result = $container->withEntryArguments(1, 2);
         $this->assertEquals($result, $container);
-        $result = $container->addEntry($entry);
+        $result = $container->addEntity($entry);
         $this->assertEquals($result, $entry);
     }
 
     public function testMake()
     {
         /**
-         * @var EntryInterface $entry
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityInterface $entry
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entry = $this->createMock(EntryInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entry = $this->createMock(EntityInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
 
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryCollection->expects($this->once())->method('resolve')->with('id', [1,2], true)->willReturn(1);
@@ -98,13 +98,13 @@ class ContainerTest extends AbstractTest
     public function testMakeWithProvider()
     {
         /**
-         * @var EntryInterface $entry
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityInterface $entry
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entry = $this->createMock(EntryInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entry = $this->createMock(EntityInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
 
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
         $entryCollection->expects($this->once())->method('resolve')->with('id', [1,2], true)->willReturn(1);
@@ -123,13 +123,13 @@ class ContainerTest extends AbstractTest
     public function testMakeWithException()
     {
         /**
-         * @var EntryInterface $entry
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityInterface $entry
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entry = $this->createMock(EntryInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entry = $this->createMock(EntityInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
 
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
@@ -141,13 +141,13 @@ class ContainerTest extends AbstractTest
     public function testAddEntryProvider()
     {
         /**
-         * @var EntryProviderInterface $entryProvider
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityProviderInterface $entryProvider
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryProvider = $this->createMock(EntryProviderInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryProvider = $this->createMock(EntityProviderInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
 
         $entryProviderCollection->expects($this->once())->method('add')->with($entryProvider);
 
@@ -159,11 +159,11 @@ class ContainerTest extends AbstractTest
     public function testRemove()
     {
         /**
-         * @var EntryProviderInterface $entryProvider
-         * @var EntryCollectionInterface $entryCollection
+         * @var EntityProviderInterface $entryProvider
+         * @var EntityCollectionInterface $entryCollection
          */
-        $entryProvider = $this->createMock(EntryProviderInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
+        $entryProvider = $this->createMock(EntityProviderInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
         $entryCollection->expects($this->once())->method('remove')->with('id');
 
         $container = new Container($entryCollection);
@@ -173,11 +173,11 @@ class ContainerTest extends AbstractTest
     public function testOffsetUnset()
     {
         /**
-         * @var EntryProviderInterface $entryProvider
-         * @var EntryCollectionInterface $entryCollection
+         * @var EntityProviderInterface $entryProvider
+         * @var EntityCollectionInterface $entryCollection
          */
-        $entryProvider = $this->createMock(EntryProviderInterface::class);
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
+        $entryProvider = $this->createMock(EntityProviderInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
         $entryCollection->expects($this->once())->method('remove')->with('id');
 
         $container = new Container($entryCollection);
@@ -205,11 +205,11 @@ class ContainerTest extends AbstractTest
     public function testHasInEntryCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryProviderCollection->method('has')->with('id')->willReturn(false);
 
@@ -221,11 +221,11 @@ class ContainerTest extends AbstractTest
     public function testOffsetExistsInEntryCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryProviderCollection->method('has')->with('id')->willReturn(false);
 
@@ -237,11 +237,11 @@ class ContainerTest extends AbstractTest
     public function testHasInEntryProviderCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryCollection->method('has')->with('id')->willReturn(false);
 
@@ -253,11 +253,11 @@ class ContainerTest extends AbstractTest
     public function testOffsetExistsInEntryProviderCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryCollection->method('has')->with('id')->willReturn(false);
 
@@ -269,11 +269,11 @@ class ContainerTest extends AbstractTest
     public function testHasNotFound()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
 
@@ -285,11 +285,11 @@ class ContainerTest extends AbstractTest
     public function testOffsetExistsNotFound()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
 
@@ -319,11 +319,11 @@ class ContainerTest extends AbstractTest
     public function testGetInEntryCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryCollection->expects($this->once())->method('get')->with('id')->willReturn(123);
         $entryProviderCollection->method('has')->with('id')->willReturn(false);
@@ -336,11 +336,11 @@ class ContainerTest extends AbstractTest
     public function testOffsetGetInEntryCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryCollection->expects($this->once())->method('get')->with('id')->willReturn(123);
         $entryProviderCollection->method('has')->with('id')->willReturn(false);
@@ -353,11 +353,11 @@ class ContainerTest extends AbstractTest
     public function testGetInEntryProviderCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryProviderCollection->expects($this->once())->method('register')->with('id');
         $entryCollection->expects($this->once())->method('get')->with('id')->willReturn(123);
@@ -371,11 +371,11 @@ class ContainerTest extends AbstractTest
     public function testOffsetGetInEntryProviderCollection()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(true);
         $entryProviderCollection->expects($this->once())->method('register')->with('id');
         $entryCollection->expects($this->once())->method('get')->with('id')->willReturn(123);
@@ -392,11 +392,11 @@ class ContainerTest extends AbstractTest
     public function testGetNotFound()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
 
@@ -410,11 +410,11 @@ class ContainerTest extends AbstractTest
     public function testOffsetGetNotFound()
     {
         /**
-         * @var EntryCollectionInterface $entryCollection
-         * @var EntryProviderCollectionInterface $entryProviderCollection
+         * @var EntityCollectionInterface $entryCollection
+         * @var EntityProviderCollectionInterface $entryProviderCollection
          */
-        $entryCollection = $this->createMock(EntryCollectionInterface::class);
-        $entryProviderCollection = $this->createMock(EntryProviderCollectionInterface::class);
+        $entryCollection = $this->createMock(EntityCollectionInterface::class);
+        $entryProviderCollection = $this->createMock(EntityProviderCollectionInterface::class);
         $entryProviderCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
         $entryCollection->expects($this->once())->method('has')->with('id')->willReturn(false);
 

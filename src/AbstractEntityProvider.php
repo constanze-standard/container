@@ -18,16 +18,16 @@
 
 namespace ConstanzeStandard\Container;
 
-use ConstanzeStandard\Container\Interfaces\EntryProviderInterface;
+use ConstanzeStandard\Container\Interfaces\EntityProviderInterface;
 
-abstract class AbstractEntryProvider implements EntryProviderInterface
+abstract class AbstractEntityProvider implements EntityProviderInterface
 {
     /**
      * Provides entries.
      * 
      * @var array
      */
-    protected $provides = [];
+    protected array $provides = [];
 
     /**
      * Returns true if the entry is provided by collection or returns false.
