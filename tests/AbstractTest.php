@@ -1,6 +1,10 @@
 <?php
 
+namespace test;
+
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use ReflectionProperty;
 
 /**
  * Class AbstractTest

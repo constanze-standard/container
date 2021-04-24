@@ -1,7 +1,10 @@
 <?php
 
+namespace test;
+
 use ConstanzeStandard\Container\Entity;
 use ConstanzeStandard\Container\Interfaces\EntityInterface;
+use ReflectionException;
 
 class EntityTest extends AbstractTest
 {

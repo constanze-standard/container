@@ -1,9 +1,10 @@
+<?xml version="1.0"?>
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
   backupGlobals="true"
   backupStaticAttributes="false"
-  cacheTokens="false"
+  bootstrap="./tests/AbstractTest.php"
   colors="true"
   convertErrorsToExceptions="true"
   convertNoticesToExceptions="true"
@@ -16,18 +17,20 @@
   stopOnSkipped="false"
   stopOnRisky="false"
   timeoutForSmallTests="1"
-  timeoutForMediumTests="10"
-  timeoutForLargeTests="60"
-  verbose="false">
-
-  <filter>
-    <whitelist  processUncoveredFilesFromWhitelist="true">
+  timeoutForMediumTests="5"
+  timeoutForLargeTests="10"
+  verbose="false"
+>
+  <coverage processUncoveredFiles="true">
+    <include>
       <directory suffix=".php">./src</directory>
-      <exclude>
-        <directory>./src/Interfaces</directory>
-        <directory>./src/Exception</directory>
-      </exclude>
-    </whitelist>
-  </filter>
-
+    </include>
+    <exclude>
+      <directory>./src/Interfaces</directory>
+      <directory>./src/Exception</directory>
+    </exclude>
+    <report>
+      <html outputDirectory="html-coverage" lowUpperBound="50" highLowerBound="90"/>
+    </report>
+  </coverage>
 </phpunit>

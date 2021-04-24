@@ -32,6 +32,6 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "scripts": {
-        "test": "phpunit --coverage-html ./tests/codeCoverage tests"
+        "test": "phpunit tests"
     }
 }
