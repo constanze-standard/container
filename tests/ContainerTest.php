@@ -70,7 +70,7 @@ class ContainerTest extends AbstractTest
         $entryCollection->expects($this->once())->method('add')->with($entry)->willReturn($entry);
 
         $container = new Container($entryCollection);
-        $result = $container->withEntryArguments(1, 2);
+        $result = $container->withEntityArguments(1, 2);
         $this->assertEquals($result, $container);
         $result = $container->addEntity($entry);
         $this->assertEquals($result, $entry);
@@ -152,7 +152,7 @@ class ContainerTest extends AbstractTest
         $entryProviderCollection->expects($this->once())->method('add')->with($entryProvider);
 
         $container = new Container($entryCollection, $entryProviderCollection);
-        $result = $container->addEntryProvider($entryProvider);
+        $result = $container->addEntityProvider($entryProvider);
         $this->assertEquals($result, $container);
     }
 

@@ -21,7 +21,7 @@ namespace ConstanzeStandard\Container\Interfaces;
 interface EntityCollectionInterface
 {
     /**
-     * Returns true if the entry exist or return false.
+     * Returns true if the entity exist or return false.
      * 
      * @param string $id
      * 
@@ -30,7 +30,7 @@ interface EntityCollectionInterface
     public function has(string $id): bool;
 
     /**
-     * Get an entry value from aggregate.
+     * Get an entity value from aggregate.
      * 
      * @param string $id
      * 
@@ -39,7 +39,7 @@ interface EntityCollectionInterface
     public function get(string $id): mixed;
 
     /**
-     * Add a entry to aggregate.
+     * Add a entity to aggregate.
      * 
      * @param EntityInterface $entity
      * 
@@ -48,7 +48,7 @@ interface EntityCollectionInterface
     public function add(EntityInterface $entity): EntityInterface;
 
     /**
-     * Remove a entry from collection.
+     * Remove a entity from collection.
      * 
      * @param string $id
      */
@@ -66,12 +66,10 @@ interface EntityCollectionInterface
     public function resolve(string $id, array $parameters = [], bool $new = false): mixed;
 
     /**
-     * Binding an alias to an entry.
+     * Binding an alias to an entity.
      * 
      * @param string $alias
      * @param string $id
-     * 
-     * @return EntityInterface
      */
-    public function alias(string $alias, string $id): EntityInterface;
+    public function alias(string $alias, string $id);
 }

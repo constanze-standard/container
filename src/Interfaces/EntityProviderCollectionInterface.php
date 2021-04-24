@@ -21,7 +21,7 @@ namespace ConstanzeStandard\Container\Interfaces;
 interface EntityProviderCollectionInterface
 {
     /**
-     * Returns true if the entry is provided by collection or returns false.
+     * Returns true if the entity is provided by collection or returns false.
      * 
      * @param string $id
      * 

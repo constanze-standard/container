@@ -22,10 +22,6 @@ use ConstanzeStandard\Container\Interfaces\EntityInterface;
 
 class Entity implements EntityInterface
 {
-    const TYPE_VALUE = 1;
-
-    const TYPE_DEFINITION = 2;
-
     /**
      * The entity id.
      * 
@@ -41,9 +37,9 @@ class Entity implements EntityInterface
     private mixed $entity;
 
     /**
-     * @var string Entity type
+     * @var int Entity type
      */
-    private string $type;
+    private int $type;
 
     /**
      * Resolved value.
@@ -69,14 +65,14 @@ class Entity implements EntityInterface
     /**
      * @param string $id
      * @param mixed $entity
-     * @param bool $isDefinition
+     * @param int $type
      */
     public function __construct(string $id, mixed $entity, int $type = self::TYPE_VALUE)
     {
         $this->id = $id;
         $this->entity = $entity;
         $this->type = $type;
-        $this->value = $this->isDefinition ? null : $entity;
+        $this->value = $this->isDefinition() ? null : $entity;
     }
 
     /**
@@ -90,6 +86,16 @@ class Entity implements EntityInterface
     }
 
     /**
+     * Return true if entity is definition or false
+     *
+     * @return bool
+     */
+    public function isDefinition(): bool
+    {
+        return $this->type === self::TYPE_DEFINITION;
+    }
+
+    /**
      * Add resolve arguments.
      * 
      * @param mixed ...$arguments
@@ -98,8 +104,7 @@ class Entity implements EntityInterface
      */
     public function addArguments(...$arguments): EntityInterface
     {
-        if ()
-        if ($this->isDefinition) {
+        if ($this->isDefinition()) {
             $this->arguments = array_merge(
                 $this->arguments,
                 array_values($arguments)
@@ -107,11 +112,6 @@ class Entity implements EntityInterface
         }
 
         return (clone $this);
-    }
-
-    public function isDefinition()
-    {
-        return $this->type === self::TYPE_DEFINITION;
     }
 
     /**
@@ -124,7 +124,7 @@ class Entity implements EntityInterface
      */
     public function resolve(array $arguments = [], bool $new = false): mixed
     {
-        if (! $this->isDefinition || ($this->resolved && $new === false)) {
+        if (!$this->isDefinition() || ($this->resolved && $new === false)) {
             return $this->value;
         }
 

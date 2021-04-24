@@ -8,6 +8,11 @@ require_once __DIR__ . '/AbstractTest.php';
 
 class EntryTest extends AbstractTest
 {
+    public function test__construct()
+    {
+
+    }
+    
     public function testGetIdentifier()
     {
         $entry = new Entity('id1', '123');

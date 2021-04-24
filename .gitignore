@@ -4,3 +4,6 @@ tests/codeCoverage
 .DS_Store
 /example
 .vscode
+.idea
+.phpunit.result.cache
+examples

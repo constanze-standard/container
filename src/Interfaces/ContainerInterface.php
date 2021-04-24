@@ -23,56 +23,56 @@ use Psr\Container\ContainerInterface as PsrContainerInterface;
 interface ContainerInterface extends PsrContainerInterface
 {
     /**
-     * Add a entity to entry aggregate.
+     * Add a entity to entity aggregate.
      * 
-     * @param EntityInterface $entry
-     * 
-     * @return EntityInterface
-     */
-    public function addEntity(EntityInterface $entry): EntityInterface;
-
-    /**
-     * Add a entry or definition of entry to container.
-     * 
-     * @param string $id Identifier of the entry.
-     * @param mixed $entity A entry or definition of entry.
-     * @param bool $isDefinition Entity is definition?
+     * @param EntityInterface $entity
      * 
      * @return EntityInterface
      */
-    public function add(string $id, mixed $entity, bool $isDefinition = false): EntityInterface;
+    public function addEntity(EntityInterface $entity): EntityInterface;
 
     /**
-     * Build a new entry by definition id and parameters.
+     * Add a entity or definition of entity to container.
+     *
+     * @param string $id Identifier of the entity.
+     * @param mixed $entity A entity or definition of entity.
+     * @param int $type
+     *
+     * @return EntityInterface
+     */
+    public function add(string $id, mixed $entity, int $type = EntityInterface::TYPE_VALUE): EntityInterface;
+
+    /**
+     * Build a new entity by definition id and parameters.
      * 
      * @param string $id
      * @param mixed $parameters
+     *
+     * @return mixed
      */
-    public function make(string $id, ...$parameters);
+    public function make(string $id, ...$parameters): mixed;
 
     /**
-     * Add a entry provider.
+     * Add a entity provider.
      * 
-     * @param EntityProviderInterface $entryProvider
+     * @param EntityProviderInterface $entityProvider
      * 
      * @return self
      */
-    public function addEntryProvider(EntityProviderInterface $entryProvider): self;
+    public function addEntityProvider(EntityProviderInterface $entityProvider): self;
 
     /**
-     * Remove an entry from container.
+     * Remove an entity from container.
      * 
      * @param string $id
      */
     public function remove(string $id);
 
     /**
-     * Binding an alias to an entry.
+     * Binding an alias to an entity.
      * 
      * @param string $alias
      * @param string $id
-     * 
-     * @return EntityInterface
      */
-    public function alias(string $alias, string $id): EntityInterface;
+    public function alias(string $alias, string $id);
 }

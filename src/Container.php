@@ -23,28 +23,27 @@ use ConstanzeStandard\Container\Exception\NotFoundException;
 use ConstanzeStandard\Container\Interfaces\ContainerInterface;
 use ConstanzeStandard\Container\Interfaces\EntityCollectionInterface;
 use ConstanzeStandard\Container\Interfaces\EntityInterface;
-use ConstanzeStandard\Container\Interfaces\FactoryInterface;
 use ConstanzeStandard\Container\Interfaces\EntityProviderCollectionInterface;
 use ConstanzeStandard\Container\Interfaces\EntityProviderInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class Container implements ContainerInterface, FactoryInterface, ArrayAccess
+class Container implements ContainerInterface, ArrayAccess
 {
     /**
      * The entity aggregate.
      * 
      * @var EntityCollectionInterface
      */
-    private EntityCollectionInterface $entryCollection;
+    private EntityCollectionInterface $entityCollection;
 
     /**
      * The entity provider collection.
      * 
      * @var EntityProviderCollectionInterface
      */
-    private EntityProviderCollectionInterface $entryProviderCollection;
+    private EntityProviderCollectionInterface $entityProviderCollection;
 
     /**
      * Arguments for every entity.
@@ -54,21 +53,21 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
     private array $entityArguments = [];
 
     /**
-     * @param EntityCollectionInterface|null $entryCollection
-     * @param EntityProviderCollectionInterface|null $entryProviderCollection
+     * @param EntityCollectionInterface|null $entityCollection
+     * @param EntityProviderCollectionInterface|null $entityProviderCollection
      */
     public function __construct(
-        EntityCollectionInterface $entryCollection = null,
-        EntityProviderCollectionInterface $entryProviderCollection = null
+        EntityCollectionInterface $entityCollection = null,
+        EntityProviderCollectionInterface $entityProviderCollection = null
     )
     {
-        $this->entryCollection = $entryCollection ?? new EntityCollection();
-        $this->entryProviderCollection = $entryProviderCollection ?? 
+        $this->entityCollection = $entityCollection ?? new EntityCollection();
+        $this->entityProviderCollection = $entityProviderCollection ??
             new EntityProviderCollection($this);
     }
 
     /**
-     * Add a entry to entry aggregate.
+     * Add a entity to entity aggregate.
      * 
      * @param EntityInterface $entity
      * 
@@ -76,33 +75,33 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
      */
     public function addEntity(EntityInterface $entity): EntityInterface
     {
-        return $this->entryCollection
+        return $this->entityCollection
             ->add($entity)
             ->addArguments(...$this->entityArguments);
     }
 
     /**
-     * Add a entry or definition of entry to container.
-     * 
-     * @param string $id Identifier of the entry.
-     * @param mixed $entity A entry or definition of entry.
-     * @param bool $isDefinition Entity is definition?
-     * 
+     * Add a entity or definition of entity to container.
+     *
+     * @param string $id Identifier of the entity.
+     * @param mixed $entity A entity or definition of entity.
+     * @param int $type
+     *
      * @return EntityInterface
      */
-    public function add(string $id, mixed $entity, bool $isDefinition = false): EntityInterface
+    public function add(string $id, mixed $entity, int $type = EntityInterface::TYPE_VALUE): EntityInterface
     {
         return $this->addEntity(
-            new Entity($id, $entity, $isDefinition)
+            new Entity($id, $entity, $type)
         );
     }
 
     /**
-     * Add arguments for every entry.
+     * Add arguments for every entity.
      * 
      * @param mixed ...$arguments
      */
-    public function withEntryArguments(...$arguments): self
+    public function withEntityArguments(...$arguments): self
     {
         $this->entityArguments = array_merge(
             $this->entityArguments,
@@ -112,7 +111,7 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
     }
 
     /**
-     * Build a new entry by definition id and parameters.
+     * Build a new entity by definition id and parameters.
      * 
      * @param string $id
      * @param mixed $parameters
@@ -121,64 +120,62 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
      */
     public function make(string $id, ...$parameters): mixed
     {
-        if ($this->entryCollection->has($id)) {
-            return $this->entryCollection->resolve($id, $parameters, true);
+        if ($this->entityCollection->has($id)) {
+            return $this->entityCollection->resolve($id, $parameters, true);
         }
 
-        if ($this->entryProviderCollection->has($id)) {
-            $this->entryProviderCollection->register($id);
-            return $this->entryCollection->resolve($id, $parameters, true);
+        if ($this->entityProviderCollection->has($id)) {
+            $this->entityProviderCollection->register($id);
+            return $this->entityCollection->resolve($id, $parameters, true);
         }
 
-        throw new NotFoundException("No entry found for '$id'");
+        throw new NotFoundException("Entity not found with key '$id'");
     }
 
     /**
-     * Add a entry provider.
+     * Add a entity provider.
      * 
-     * @param EntityProviderInterface $entryProvider
+     * @param EntityProviderInterface $entityProvider
      * 
      * @return self
      */
-    public function addEntryProvider(EntityProviderInterface $entryProvider): self
+    public function addEntityProvider(EntityProviderInterface $entityProvider): self
     {
-        $this->entryProviderCollection->add($entryProvider);
+        $this->entityProviderCollection->add($entityProvider);
 
         return $this;
     }
 
     /**
-     * Remove an entry from container.
+     * Remove an entity from container.
      * 
      * @param string $id
      */
     public function remove(string $id)
     {
-        $this->entryCollection->remove($id);
+        $this->entityCollection->remove($id);
     }
 
     /**
-     * Binding an alias to an entry.
+     * Binding an alias to an entity.
      * 
      * @param string $alias
      * @param string $id
-     * 
-     * @return EntityInterface
      */
-    public function alias(string $alias, string $id): EntityInterface
+    public function alias(string $alias, string $id)
     {
-        return $this->entryCollection->alias($alias, $id);
+        $this->entityCollection->alias($alias, $id);
     }
 
     /**
-     * Finds an entry of the container by its identifier and returns it.
+     * Finds an entity of the container by its identifier and returns it.
      *
-     * @param string $id Identifier of the entry to look for.
+     * @param string $id Identifier of the entity to look for.
      *
      * @return mixed Entity.
-     *@throws ContainerExceptionInterface Error while retrieving the entry.
+     *@throws ContainerExceptionInterface Error while retrieving the entity.
      *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws NotFoundExceptionInterface  No entity was found for **this** identifier.
      */
     public function get(string $id): mixed
     {
@@ -186,26 +183,26 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
             throw new InvalidArgumentException('The first parameter of `'.static::class . '::get` must be string.');
         }
 
-        if ($this->entryCollection->has($id)) {
-            return $this->entryCollection->get($id);
+        if ($this->entityCollection->has($id)) {
+            return $this->entityCollection->get($id);
         }
 
-        if ($this->entryProviderCollection->has($id)) {
-            $this->entryProviderCollection->register($id);
-            return $this->entryCollection->get($id);
+        if ($this->entityProviderCollection->has($id)) {
+            $this->entityProviderCollection->register($id);
+            return $this->entityCollection->get($id);
         }
 
-        throw new NotFoundException("No entry found for '$id'");
+        throw new NotFoundException("Entity not found with key '$id'");
     }
 
     /**
-     * Returns true if the container can return an entry for the given identifier.
+     * Returns true if the container can return an entity for the given identifier.
      * Returns false otherwise.
      *
      * `has($id)` returning true does not mean that `get($id)` will not throw an exception.
      * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
      *
-     * @param string $id Identifier of the entry to look for.
+     * @param string $id Identifier of the entity to look for.
      *
      * @return bool
      */
@@ -216,8 +213,8 @@ class Container implements ContainerInterface, FactoryInterface, ArrayAccess
         }
 
         if (
-            $this->entryCollection->has($id) ||
-            $this->entryProviderCollection->has($id)
+            $this->entityCollection->has($id) ||
+            $this->entityProviderCollection->has($id)
         ) {
             return true;
         }

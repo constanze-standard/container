@@ -32,6 +32,13 @@ class EntityCollection implements EntityCollectionInterface
     private array $entities = [];
 
     /**
+     * Alias list for entity
+     *
+     * @var array
+     */
+    private array $aliasList = [];
+
+    /**
      * @param array $entities
      */
     public function __construct(array $entities = [])
@@ -61,14 +68,19 @@ class EntityCollection implements EntityCollectionInterface
      * 
      * @param string $alias
      * @param string $id
-     * 
-     * @return EntityInterface
+     *
+     * @throws RuntimeException
      */
-    public function alias(string $alias, string $id): EntityInterface
+    public function alias(string $alias, string $id)
     {
-        $entity = $this->getEntity($id);
-        $this->entities[$alias] = &$entity;
-        return $entity;
+        if (!array_key_exists($id, $this->entities)) {
+            if (array_key_exists($id, $this->aliasList)) {
+                $this->aliasList[$alias] = $this->aliasList[$id];
+            } else {
+                throw new RuntimeException("ID '$id' No found.");
+            }
+        }
+        $this->aliasList[$alias] = $id;
     }
 
     /**
@@ -92,7 +104,7 @@ class EntityCollection implements EntityCollectionInterface
      */
     public function has(string $id): bool
     {
-        return array_key_exists($id, $this->entities);
+        return array_key_exists($id, $this->entities) || array_key_exists($id, $this->aliasList);
     }
 
     /**
@@ -102,7 +114,17 @@ class EntityCollection implements EntityCollectionInterface
      */
     public function remove(string $id)
     {
-        unset($this->entities[$id]);
+        if (array_key_exists($id, $this->entities)) {
+            unset($this->entities[$id]);
+            foreach ($this->aliasList as $alias => $realId) {
+                if ($realId === $id) {
+                    unset($this->aliasList[$alias]);
+                }
+            }
+        }
+        if (array_key_exists($id, $this->aliasList)) {
+            unset($this->aliasList[$id]);
+        }
     }
 
     /**
@@ -128,10 +150,14 @@ class EntityCollection implements EntityCollectionInterface
      */
     private function getEntity(string $id): EntityInterface
     {
-        if ($this->has($id)) {
+        if (array_key_exists($id, $this->entities)) {
             return $this->entities[$id];
         }
+        if (array_key_exists($id, $this->aliasList)) {
+            $realId = $this->aliasList[$id];
+            return $this->entities[$realId];
+        }
 
-        throw new RuntimeException("No entity found for '$id'");
+        throw new RuntimeException("Entity not found with key '$id'");
     }
 }

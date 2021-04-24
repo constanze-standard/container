@@ -20,6 +20,10 @@ namespace ConstanzeStandard\Container\Interfaces;
 
 interface EntityInterface
 {
+    const TYPE_VALUE = 1;
+
+    const TYPE_DEFINITION = 2;
+
     /**
      * Get the entity id.
      * 
