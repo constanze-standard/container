@@ -111,7 +111,7 @@ class Entity implements EntityInterface
             );
         }
 
-        return (clone $this);
+        return $this;
     }
 
     /**
@@ -128,10 +128,10 @@ class Entity implements EntityInterface
             return $this->value;
         }
 
-        $this->resolved = true;
         $this->value = call_user_func(
             $this->entity, ...$this->arguments, ...$arguments
         );
+        $this->resolved = true;
 
         return $this->value;
     }
